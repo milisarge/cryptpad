@@ -7,13 +7,12 @@ define([
 
     var ROOT = "root";
     var UNSORTED = "unsorted";
-    var FILES_DATA = "filesData";
     var TRASH = "trash";
     var TEMPLATE = "template";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
-        FILES_DATA = config.storageKey || FILES_DATA;
+        var FILES_DATA = config.storageKey;
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
