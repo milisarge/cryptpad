@@ -9,10 +9,10 @@ define([
     var UNSORTED = "unsorted";
     var TRASH = "trash";
     var TEMPLATE = "template";
+    var FILES_DATA = "Cryptpad_RECENTPADS";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
-        var FILES_DATA = config.storageKey;
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
@@ -216,13 +216,13 @@ define([
             return ret;
         };
 
-        var getFilesDataFiles = function () {
+        var getFilesDataFiles = exp.getFilesDataFiles = function () {
             var ret = [];
-            for (var el in files[FILES_DATA]) {
+            files[FILES_DATA].forEach(function (el) {
                 if (el.href && ret.indexOf(el.href) === -1) {
                     ret.push(el.href);
                 }
-            }
+            });
             return ret;
         };
 
