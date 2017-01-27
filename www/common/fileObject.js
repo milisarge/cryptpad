@@ -26,9 +26,6 @@ define([
         var isLoggedIn = typeof proxy.ed === "string" && typeof proxy.login_name === "string";
 
         var pinpad;
-        if (isLoggedIn) {
-            pinpad = Pinpad.create(config.network, proxy.ed);
-        }
 
         var exp = {};
 
@@ -909,12 +906,13 @@ define([
         };
 
         var checkHash = exp.checkHash = function () {
-            if (!isLoggedIn) { return; }
+            if (!isLoggedIn || !pinpad) { return; }
             var fileList = getFilesDataFiles();
             return pinpad.checkHash(fileList);
         };
         var initPinPad = exp.initPinPad = function () {
             if (!isLoggedIn) { return; }
+            pinpad = Pinpad.create(config.network, proxy.ed);
             window.pinpad = pinpad;
             checkHash();
         };
