@@ -9,12 +9,10 @@ define([
     '/common/cryptpad-common.js',
     '/common/fileObject.js',
     '/common/toolbar.js',
-    '/customize/application_config.js',
-    '/bower_components/tweetnacl/nacl-fast.min.js'
+    '/customize/application_config.js'
 ], function (Config, Listmap, Crypto, TextPatcher, Messages, JSONSortify, Cryptpad, FO, Toolbar, AppConfig) {
     var module = window.MODULE = {};
 
-    var Nacl = window.nacl;
     var $ = window.jQuery;
     var saveAs = window.saveAs;
     var $iframe = $('#pad-iframe').contents();
@@ -134,7 +132,7 @@ define([
         else { $iframe.find('[draggable="false"]').attr('draggable', true); }
     };
 
-    var init = function (proxy) {
+    var init = function (proxy, network) {
         var files = proxy.drive;
         var isOwnDrive = function () {
             return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
@@ -143,6 +141,7 @@ define([
             return files.workgroup === 1;
         };
         config.workgroup = isWorkgroup();
+        config.network = network;
 
         var filesOp = FO.init(files, config);
         filesOp.fixFiles();
@@ -1309,6 +1308,10 @@ define([
                     var element = filesOp.findElement(files, path);
                     if (!filesOp.isFile(element)) { return; }
                     var data = filesOp.getFileData(element);
+                    if (!data) {
+                        debug('Unable to find filesData for the element', element);
+                        return;
+                    }
                     $el.find('.title').attr('title', data.title).text(data.title);
                     $el.find('.atime').attr('title', getDate(data.atime)).text(getDate(data.atime));
                     $el.find('.ctime').attr('title', getDate(data.ctime)).text(getDate(data.ctime));
@@ -1726,39 +1729,6 @@ define([
             APP.resizeTree = undefined;
         });
 
-        // TODO : Pin pads here
-        var deduplicate = function (array) {
-            var a = array.slice();
-            for(var i=0; i<a.length; i++) {
-                for(var j=i+1; j<a.length; j++) {
-                    if(a[i] === a[j])
-                        a.splice(j--, 1);
-                }
-            }
-            return a;
-        };
-        var pinPads = function () {
-            var fileList = filesOp.getFilesDataFiles();
-            var channelIdList = [];
-            fileList.forEach(function (href) {
-                var parsedHref = Cryptpad.parsePadUrl(href);
-                if (!parsedHref || !parsedHref.hash) { return; }
-                var parsedHash = Cryptpad.parseHash(parsedHref.hash);
-                if (!parsedHash || !parsedHash.channel) { return; }
-                channelIdList.push(Cryptpad.base64ToHex(parsedHash.channel));
-            });
-            var uniqueList = deduplicate(channelIdList).sort();
-            var hash = Nacl.util.encodeBase64(Nacl.hash(Nacl.util.decodeUTF8( uniqueList.join('') )));
-            console.log(hash);
-            var HistoryKeeper = {}; // TODO use the new history keeper communication module
-            
-        };
-        pinPads();
-
-
-        // END TODO
-
-
         refresh();
     };
 
@@ -1813,6 +1783,7 @@ define([
         }
         var onCreate = function (info) {
             var realtime = module.realtime = info.realtime;
+            var network = module.network = info.network;
 
             var editHash = APP.editHash = !readOnly ? Cryptpad.getEditHashFromKeys(info.channel, secret.keys) : undefined;
             var viewHash = APP.viewHash = Cryptpad.getViewHashFromKeys(info.channel, secret.keys);
@@ -1886,7 +1857,7 @@ define([
             }
             if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
             initLocalStorage();
-            init(proxy);
+            init(proxy, module.network);
             APP.userList.onChange();
             Cryptpad.removeLoadingScreen();
         };

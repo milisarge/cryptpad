@@ -135,9 +135,10 @@ define([
         }
     };
 
-    var onReady = function (f, proxy, storageKey) {
+    var onReady = function (f, proxy, storageKey, network) {
         filesOp = FO.init(proxy.drive, {
-            storageKey: storageKey
+            storageKey: storageKey,
+            network: network
         });
         storeObj = proxy;
         ready = true;
@@ -186,8 +187,8 @@ define([
             if (!Cryptpad.getUserHash()) {
                 localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
             }
-        }).on('ready', function () {
-        if (ready) { return; }
+        }).on('ready', function (info) {
+            if (ready) { return; }
             if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
@@ -195,11 +196,11 @@ define([
                 var oldStore = Cryptpad.getStore(true);
                 oldStore.get(Cryptpad.storageKey, function (err, s) {
                     drive[Cryptpad.storageKey] = s;
-                    onReady(f, rt.proxy, Cryptpad.storageKey);
+                    onReady(f, rt.proxy, Cryptpad.storageKey, info.network);
                 });
                 return;
             }
-            onReady(f, rt.proxy, Cryptpad.storageKey);
+            onReady(f, rt.proxy, Cryptpad.storageKey, info.network);
         })
         .on('disconnect', function (info) {
             //setEditable(false);

@@ -1,7 +1,8 @@
 define([
     '/customize/messages.js',
+    '/common/pinpad.js',
     '/bower_components/jquery/dist/jquery.min.js',
-], function (Messages) {
+], function (Messages, Pinpad) {
     var $ = window.jQuery;
     var module = {};
 
@@ -9,7 +10,7 @@ define([
     var UNSORTED = "unsorted";
     var TRASH = "trash";
     var TEMPLATE = "template";
-    var FILES_DATA = "Cryptpad_RECENTPADS";
+    var FILES_DATA = "CryptPad_RECENTPADS";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
     var init = module.init = function (files, config) {
@@ -21,6 +22,12 @@ define([
         var logError = config.logError || logging;
         var debug = config.debug || logging;
         var workgroup = config.workgroup;
+        var isLoggedIn = typeof files.ed === "string" && typeof files.login_name === "string";
+
+        var pinpad;
+        if (isLoggedIn) {
+            pinpad = Pinpad.create(config.network, files.ed);
+        }
 
         var exp = {};
 
@@ -899,6 +906,12 @@ define([
             }
             debug("File system was clean");
         };
+
+        var checkHash = exp.checkHash = function () {
+            var fileList = getFilesDataFiles();
+            return pinpad.checkHash(fileList);
+        };
+
 
         return exp;
     };
