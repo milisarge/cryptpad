@@ -6,9 +6,10 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/rpc.js',
+    '/common/encode.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad, Rpc) {
+], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad, Rpc, Encode) {
     var $ = window.jQuery;
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
@@ -161,8 +162,8 @@ define([
 
     assert(function () {
         var random = Nacl.randomBytes(64);
-        var str = Cryptpad.uint8ArrayToHex(random);
-        return random.toString() === Cryptpad.hexToUint8Array(str).toString();
+        var str = Encode.uint8ArrayToHex(random);
+        return random.toString() === Encode.hexToUint8Array(str).toString();
     }, "failed roundtrip of uint8ArrayToHex and hexToUint8Array");
 
     assert(function () {

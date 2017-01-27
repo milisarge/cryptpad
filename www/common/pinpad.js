@@ -1,7 +1,10 @@
 define([
-    '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/common/rpc.js'
-], function (Nacl, Rpc) {
+    '/common/rpc.js',
+
+    '/bower_components/tweetnacl/nacl-fast.min.js'
+], function (Rpc) {
+
+    var Nacl = window.nacl;
 
     var deduplicate = function (array) {
         var a = array.slice();

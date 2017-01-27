@@ -1,7 +1,8 @@
 define([
+    '/common/encode.js',
+
     '/bower_components/tweetnacl/nacl-fast.min.js',
-    '/common/cryptpad-common.js',
-], function (Nacl, Cryptpad) {
+], function (Encode) {
 
     var getHistoryKeeperName = function (network) {
         var wc = network.webchannels[0];
@@ -24,14 +25,20 @@ define([
 
     };
 
+    var signMsg = function (msg, secKey) {
+
+    }
+console.log('RPC online !');
     var create = function (network, edPrivateKey) {
         if (!/[0-9a-f]{64}/.test(edPrivateKey)) {
             throw new Error("private signing key is not valid");
         }
         var ctx = {
-            privateKey: Cryptpad.hexToUint8Array(edPrivateKey),
+            privateKey: Encode.hexToUint8Array(edPrivateKey),
             seq: new Date().getTime()
         };
+        console.log('RPC Create !');
+        try { throw new Error(); } catch (e) { console.log(e.stack); }
         network.on('message', function (msg) { onMsg(ctx, msg); });
         return {
             cookie: function (cb) { cookie(ctx, cb); },
