@@ -258,6 +258,20 @@ define([
         return secret;
     };
 
+    var hexToUint8Array_TABLE = {};
+    ("0123456789abcdef          ABCDEF").split('').forEach(function (n, i) {
+        hexToUint8Array_TABLE[n] = i & 15;
+    });
+    var hexToUint8Array = common.hexToUint8Array = function (s) {
+        if (!/[a-fA-F0-9]+/.test(s) || s.length & 1) { throw new Error("string is not hex"); }
+        var i = 0;
+        var out = new Uint8Array(s.length / 2);
+        for (var j = 0; j < s.length; j += 2) {
+            out[i++] = (hexToUint8Array_TABLE[s[j]] << 4) | hexToUint8Array_TABLE[s[j+1]];
+        }
+        return out;
+    };
+
     var uint8ArrayToHex = common.uint8ArrayToHex = function (a) {
         // call slice so Uint8Arrays work as expected
         return Array.prototype.slice.call(a).map(function (e, i) {
