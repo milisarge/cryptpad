@@ -5,8 +5,10 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
+    '/common/rpc.js',
+
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad) {
+], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad, Rpc) {
     var $ = window.jQuery;
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
@@ -162,6 +164,10 @@ define([
         var str = Cryptpad.uint8ArrayToHex(random);
         return random.toString() === Cryptpad.hexToUint8Array(str).toString();
     }, "failed roundtrip of uint8ArrayToHex and hexToUint8Array");
+
+    assert(function () {
+        return !!Rpc.create;
+    }, "RPC exists");
 
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
