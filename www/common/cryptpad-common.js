@@ -10,6 +10,7 @@ define([
     '/customize/application_config.js',
 
     '/bower_components/jquery/dist/jquery.min.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Config, Messages, Store, Crypto, Alertify, Spinner, Clipboard, FS, AppConfig) {
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -18,6 +19,7 @@ define([
     Additionally, there is some basic functionality for import/export.
 */
     var $ = window.jQuery;
+    var Nacl = window.nacl;
 
     // When set to true, USE_FS_STORE becomes the default store, but the localStorage store is
     // still loaded for migration purpose. When false, the localStorage is used.
@@ -290,7 +292,7 @@ define([
     };
 
     var createChannelId = common.createChannelId = function () {
-        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
+        var id = uint8ArrayToHex(Nacl.randomBytes(16));
         if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
             throw new Error('channel ids must consist of 32 hex characters');
         }
