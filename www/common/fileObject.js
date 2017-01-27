@@ -13,7 +13,7 @@ define([
     var FILES_DATA = "CryptPad_RECENTPADS";
     var NEW_FOLDER_NAME = Messages.fm_newFolder;
 
-    var init = module.init = function (files, config) {
+    var init = module.init = function (proxy, config) {
         var DEBUG = config.DEBUG || false;
         var logging = function () {
             console.log.apply(console, arguments);
@@ -22,11 +22,12 @@ define([
         var logError = config.logError || logging;
         var debug = config.debug || logging;
         var workgroup = config.workgroup;
-        var isLoggedIn = typeof files.ed === "string" && typeof files.login_name === "string";
+        var files = proxy.drive;
+        var isLoggedIn = typeof proxy.ed === "string" && typeof proxy.login_name === "string";
 
         var pinpad;
         if (isLoggedIn) {
-            pinpad = Pinpad.create(config.network, files.ed);
+            pinpad = Pinpad.create(config.network, proxy.ed);
         }
 
         var exp = {};

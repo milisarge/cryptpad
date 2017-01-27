@@ -136,7 +136,7 @@ define([
     };
 
     var onReady = function (f, proxy, storageKey, network) {
-        filesOp = FO.init(proxy.drive, {
+        filesOp = FO.init(proxy, {
             storageKey: storageKey,
             network: network
         });
