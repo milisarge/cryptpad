@@ -143,7 +143,7 @@ define([
         config.workgroup = isWorkgroup();
         config.network = network;
 
-        var filesOp = FO.init(files, config);
+        var filesOp = FO.init(proxy, config);
         filesOp.fixFiles();
 
         var error = filesOp.error;
