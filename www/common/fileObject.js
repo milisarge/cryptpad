@@ -908,8 +908,14 @@ define([
         };
 
         var checkHash = exp.checkHash = function () {
+            if (!isLoggedIn) { return; }
             var fileList = getFilesDataFiles();
             return pinpad.checkHash(fileList);
+        };
+        var initPinPad = exp.initPinPad = function () {
+            if (!isLoggedIn) { return; }
+            window.pinpad = pinpad;
+            checkHash();
         };
 
 
