@@ -5,11 +5,13 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/common/cryptpad-common.js',
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (jQuery, Hyperjson, TextPatcher, Sortify, Cryptpad) {
     var $ = window.jQuery;
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
+    var Nacl = window.nacl;
 
     var assertions = 0;
     var failed = false;
@@ -154,6 +156,12 @@ define([
         }
         return true;
     }, "expected all translation keys in default language to be present in all translations. See console for details.");
+
+    assert(function () {
+        var random = Nacl.randomBytes(64);
+        var str = Cryptpad.uint8ArrayToHex(random);
+        return random.toString() === Cryptpad.hexToUint8Array(str).toString();
+    }, "failed roundtrip of uint8ArrayToHex and hexToUint8Array");
 
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {
