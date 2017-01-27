@@ -140,6 +140,7 @@ define([
             storageKey: storageKey,
             network: network
         });
+        filesOp.initPinPad();
         storeObj = proxy;
         ready = true;
         if (typeof(f) === 'function') {
