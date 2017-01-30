@@ -5,7 +5,7 @@ define([
 ], function (Encode) {
 
     var getHistoryKeeperName = function (network) {
-        var wc = network.webchannels[0];
+        var wc = network.webChannels[0];
         if (!wc) {
             throw new Error("ERROR: no joined webchannels so we can't get the history keeper name");
         }
@@ -14,7 +14,7 @@ define([
     };
 
     var sendMsg = function (ctx, cb) {
-
+        var hcn = getHistoryKeeperName(ctx.network);
     };
 
     var onMsg = function (ctx, msg) {
@@ -28,17 +28,24 @@ define([
     var signMsg = function (msg, secKey) {
 
     }
-console.log('RPC online !');
+
     var create = function (network, edPrivateKey) {
+
+console.log('RPC Create !');
+if (window.CryptPad_Rpc_created) { return; }
+window.CryptPad_Rpc_created = true;
+try { throw new Error(); } catch (e) { console.log(e.stack); }
+
+window.__network = network;
+
         if (!/[0-9a-f]{64}/.test(edPrivateKey)) {
             throw new Error("private signing key is not valid");
         }
         var ctx = {
             privateKey: Encode.hexToUint8Array(edPrivateKey),
-            seq: new Date().getTime()
+            seq: new Date().getTime(),
+            network: network
         };
-        console.log('RPC Create !');
-        try { throw new Error(); } catch (e) { console.log(e.stack); }
         network.on('message', function (msg) { onMsg(ctx, msg); });
         return {
             cookie: function (cb) { cookie(ctx, cb); },

@@ -202,10 +202,10 @@ define([
             APP.setDisplayName(APP.getDisplayName(proxy));
 
             // remember your curve key
-            proxy.curve = Cryptpad.uint8ArrayToHex(opt.curveSeed);
+            proxy.curve = Encode.uint8ArrayToHex(opt.curveSeed);
 
             // remember your ed seed
-            proxy.ed = Cryptpad.uint8ArrayToHex(opt.edSeed);
+            proxy.ed = Encode.uint8ArrayToHex(opt.edSeed);
 
             // remember the first time you visited
             proxy.ctime = opt.now;
@@ -296,7 +296,7 @@ define([
         keys.editKeyStr = keys.editKeyStr.replace(/\//g, '-');
 
         // 32 bytes of hex
-        opt.channel = Cryptpad.uint8ArrayToHex(channelSeed);
+        opt.channel = Encode.uint8ArrayToHex(channelSeed);
 
         var channelHex = opt.channel;
 
